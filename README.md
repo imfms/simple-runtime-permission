@@ -6,3 +6,5 @@ An easy runtime permission handler for Android, depends on tbruyelle's [RxPermis
 
 - Exception Add Permission Field
 - ShouldShoultRequest Dialog Give Permission  
+- Add To Library
+  
