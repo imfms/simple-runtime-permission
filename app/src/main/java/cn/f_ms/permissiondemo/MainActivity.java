@@ -8,8 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
-
 import cn.f_ms.rx_easy_runtime_permission.EasyRxRuntimePermission;
 import cn.f_ms.rx_easy_runtime_permission.RuntimePermissionException;
 import io.reactivex.ObservableEmitter;
@@ -21,8 +19,6 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends AppCompatActivity {
 
     private Activity mActivity;
-    private RxPermissions rxPermissions;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,15 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
         mActivity = this;
 
-        rxPermissions = new RxPermissions(mActivity);
-
         requestPermission();
     }
 
     private void requestPermission() {
 
 
-        EasyRxRuntimePermission.request(rxPermissions, mActivity, new DialogRequestSubscribe(mActivity), Manifest.permission.READ_CONTACTS)
+        EasyRxRuntimePermission.request(mActivity, new DialogRequestSubscribe(mActivity), Manifest.permission.READ_CONTACTS)
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -53,7 +47,22 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof RuntimePermissionException) {
-                            String result = ((RuntimePermissionException) e).type().toString();
+
+                            RuntimePermissionException.TYPE refuseType = ((RuntimePermissionException) e).type();
+
+                            String result = refuseType.toString() + ", ";
+
+                            switch (refuseType) {
+                                case REFUSE_NEVER_ASK:
+                                    result += "用户拒绝系统权限申请且不再提醒";
+                                    break;
+                                case USER_REFUSE:
+                                    result += "用户拒绝系统权限申请";
+                                    break;
+                                case USER_REFUSE_TIPS:
+                                    result += "用户拒绝权限提示";
+                                    break;
+                            }
 
                             Toast.makeText(mActivity, "result:" + result, Toast.LENGTH_SHORT).show();
                         }

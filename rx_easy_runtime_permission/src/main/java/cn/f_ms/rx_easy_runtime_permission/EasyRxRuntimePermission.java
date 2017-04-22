@@ -13,21 +13,37 @@ import io.reactivex.ObservableTransformer;
  */
 public final class EasyRxRuntimePermission {
 
+    public static Observable<Boolean> request(Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
+        return request(new RxPermissions(activity), activity, shouldShowRationaleListener, permission);
+    }
+
     public static Observable<Boolean> request(RxPermissions rxPermissions, Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
         return Observable.just(true)
                 .compose(new EasyRuntimePermissionTransformer<>(rxPermissions, activity, shouldShowRationaleListener, permission));
     }
 
-    public static Observable<Boolean> request(RxPermissions rxPermissions, Activity activity, String... permission) {
-        return request(rxPermissions, activity, null, permission);
+    public static Observable<Boolean> request(RxPermissions rxPermissions, String... permission) {
+        return request(rxPermissions, null, null, permission);
+    }
+
+    public static Observable<Boolean> request(Activity activity, String... permission) {
+        return request(new RxPermissions(activity), permission);
+    }
+
+    public ObservableTransformer ensure(Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
+        return ensure(new RxPermissions(activity), activity, shouldShowRationaleListener, permission);
     }
 
     public ObservableTransformer ensure(RxPermissions rxPermissions, Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
         return new EasyRuntimePermissionTransformer<>(rxPermissions, activity, shouldShowRationaleListener, permission);
     }
 
-    public ObservableTransformer ensure(RxPermissions rxPermissions, Activity activity, String... permission) {
-        return new EasyRuntimePermissionTransformer<>(rxPermissions, activity, null, permission);
+    public ObservableTransformer ensure(Activity activity, String... permission) {
+        return ensure(new RxPermissions(activity), null, null, permission);
+    }
+
+    public ObservableTransformer ensure(RxPermissions rxPermissions, String... permission) {
+        return ensure(rxPermissions, null, null, permission);
     }
 
 }

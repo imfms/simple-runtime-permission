@@ -18,6 +18,54 @@ import io.reactivex.functions.Function;
 
 public class EasyRuntimePermissionTransformer<T> implements ObservableTransformer<T, Boolean> {
 
+
+    private static class ShouldRationaleTransformer<T> implements ObservableTransformer<T, PermissionType> {
+
+        private final Activity mActivity;
+        private RxPermissions rxPermissions;
+        private final String[] mPermission;
+
+        ShouldRationaleTransformer(Activity activity, RxPermissions rxPermissions, String... permission) {
+            mActivity = activity;
+            this.rxPermissions = rxPermissions;
+            this.mPermission = permission;
+        }
+
+        @Override
+        public ObservableSource<PermissionType> apply(@NonNull Observable<T> upstream) {
+            return upstream.map(new Function<T, Boolean>() {
+                @Override
+                public Boolean apply(@NonNull T t) throws Exception {
+
+                    for (String permission : mPermission) {
+                        if (!rxPermissions.isGranted(permission)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            })
+                    .zipWith(
+                            rxPermissions.shouldShowRequestPermissionRationale(mActivity, mPermission),
+                            new BiFunction<Boolean, Boolean, PermissionType>() {
+                                @Override
+                                public PermissionType apply(@NonNull Boolean isHavePermission, @NonNull Boolean isShouldShowRationale) throws Exception {
+
+                                    if (isHavePermission) {
+                                        return PermissionType.PASS;
+                                    }
+
+                                    if (isShouldShowRationale) {
+                                        return PermissionType.REQUEST_WITH_TIPS;
+                                    } else {
+                                        return PermissionType.REQUEST;
+                                    }
+                                }
+                            }
+                    );
+        }
+    }
+
     /* permission handle type */
     private enum PermissionType {
         PASS, REQUEST_WITH_TIPS, REQUEST
@@ -33,8 +81,8 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
 
     private Activity mActivity;
 
-    public EasyRuntimePermissionTransformer(RxPermissions rxPermissions, Activity activity, String... permission) {
-        this(rxPermissions, activity, null, permission);
+    public EasyRuntimePermissionTransformer(RxPermissions rxPermissions, String... permission) {
+        this(rxPermissions, null, null, permission);
     }
 
     public EasyRuntimePermissionTransformer(RxPermissions rxPermissions, Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
@@ -48,9 +96,6 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
         if (permission.length == 0) {
             throw new IllegalArgumentException("request permission can't be empty");
         }
-        if (activity == null) {
-            throw new NullPointerException();
-        }
 
         mRequestPermissTipObserver = shouldShowRationaleListener;
         this.rxPermissions = rxPermissions;
@@ -60,36 +105,23 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
 
     @Override
     public ObservableSource<Boolean> apply(@NonNull Observable<T> upstream) {
-        return upstream.map(new Function<T, Boolean>() {
-            @Override
-            public Boolean apply(@NonNull T t) throws Exception {
 
-                for (String permission : mPermission) {
-                    if (!rxPermissions.isGranted(permission)) {
-                        return false;
-                    }
+        Observable<PermissionType> requestObser;
+
+        if (mActivity == null) {
+            requestObser = upstream.map(new Function<T, PermissionType>() {
+                @Override
+                public PermissionType apply(@NonNull T t) throws Exception {
+                    return PermissionType.REQUEST;
                 }
-                return true;
-            }
-        })
-                .zipWith(
-                        rxPermissions.shouldShowRequestPermissionRationale(mActivity, mPermission),
-                        new BiFunction<Boolean, Boolean, PermissionType>() {
-                            @Override
-                            public PermissionType apply(@NonNull Boolean isHavePermission, @NonNull Boolean isShouldShowRationale) throws Exception {
+            });
+        } else {
+            requestObser = upstream.compose(
+                    new ShouldRationaleTransformer<T>(mActivity, rxPermissions, mPermission)
+            );
+        }
 
-                                if (isHavePermission) {
-                                    return PermissionType.PASS;
-                                }
-
-                                if (isShouldShowRationale) {
-                                    return PermissionType.REQUEST_WITH_TIPS;
-                                } else {
-                                    return PermissionType.REQUEST;
-                                }
-                            }
-                        }
-                )
+        return requestObser
                 .flatMap(new Function<PermissionType, ObservableSource<Boolean>>() {
                     @Override
                     public ObservableSource<Boolean> apply(@NonNull PermissionType permissionType) throws Exception {
