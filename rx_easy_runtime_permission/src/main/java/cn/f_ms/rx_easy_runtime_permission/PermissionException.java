@@ -3,7 +3,7 @@ package cn.f_ms.rx_easy_runtime_permission;
 /**
  * Permission Refuse Exception
  */
-public class RuntimePermissionException extends RuntimeException {
+public class PermissionException extends RuntimeException {
 
     private TYPE mExceptionType;
 
@@ -11,8 +11,8 @@ public class RuntimePermissionException extends RuntimeException {
         USER_REFUSE, USER_REFUSE_TIPS, REFUSE_NEVER_ASK
     }
 
-    public RuntimePermissionException(TYPE exceptionType) {
-        super("RuntimePermissionException: Refuse, " + exceptionType.toString());
+    public PermissionException(TYPE exceptionType) {
+        super("PermissionException: Refuse, " + exceptionType.toString());
 
         mExceptionType = exceptionType;
     }

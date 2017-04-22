@@ -8,8 +8,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import cn.f_ms.rx_easy_runtime_permission.EasyRxRuntimePermission;
-import cn.f_ms.rx_easy_runtime_permission.RuntimePermissionException;
+import cn.f_ms.rx_easy_runtime_permission.EasyRxPermissionTransformer;
+import cn.f_ms.rx_easy_runtime_permission.PermissionException;
+import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
@@ -19,6 +20,7 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends AppCompatActivity {
 
     private Activity mActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,52 +28,47 @@ public class MainActivity extends AppCompatActivity {
 
         mActivity = this;
 
-        requestPermission();
+        requestPermission("Congratulation, You Geted Permission");
     }
 
-    private void requestPermission() {
+    private void requestPermission(String s) {
 
 
-        EasyRxRuntimePermission.request(mActivity, new DialogRequestSubscribe(mActivity), Manifest.permission.READ_CONTACTS)
-                .subscribe(new Observer<Boolean>() {
+        Observable.just(s)
+                .compose(new EasyRxPermissionTransformer<String>(mActivity, new DialogRequestSubscribe(mActivity), Manifest.permission.READ_CONTACTS))
+                .subscribe(new Observer<String>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
+                    public void onSubscribe(Disposable d) {}
 
                     @Override
-                    public void onNext(Boolean aBoolean) {
-                        Toast.makeText(mActivity, "GetedPermission", Toast.LENGTH_SHORT).show();
+                    public void onNext(String s) {
+                        Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof RuntimePermissionException) {
+                        e.printStackTrace();
+                        if (e instanceof PermissionException) {
 
-                            RuntimePermissionException.TYPE refuseType = ((RuntimePermissionException) e).type();
+                            PermissionException.TYPE refuseType = ((PermissionException) e).type();
 
-                            String result = refuseType.toString() + ", ";
+                            String result = refuseType.toString();
 
                             switch (refuseType) {
                                 case REFUSE_NEVER_ASK:
-                                    result += "用户拒绝系统权限申请且不再提醒";
                                     break;
                                 case USER_REFUSE:
-                                    result += "用户拒绝系统权限申请";
                                     break;
                                 case USER_REFUSE_TIPS:
-                                    result += "用户拒绝权限提示";
                                     break;
                             }
 
-                            Toast.makeText(mActivity, "result:" + result, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, "REFUSE:" + result, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onComplete() {
-
-                    }
+                    public void onComplete() {}
                 });
     }
 
@@ -101,15 +98,15 @@ public class MainActivity extends AppCompatActivity {
 
         private void showTipDialog(final SelectListener listener) {
             new AlertDialog.Builder(mActivity)
-                    .setTitle("亲")
-                    .setMessage("等下给个权限呗~")
-                    .setPositiveButton("准", new DialogInterface.OnClickListener() {
+                    .setTitle("Tips")
+                    .setMessage("Please Give The Permission, I Need It")
+                    .setPositiveButton("Agree", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             listener.onSelect(true);
                         }
                     })
-                    .setNegativeButton("就不给", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Refuse", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             listener.onSelect(false);
@@ -121,4 +118,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }

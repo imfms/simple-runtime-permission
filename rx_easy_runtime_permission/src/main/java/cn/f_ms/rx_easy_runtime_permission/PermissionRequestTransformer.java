@@ -16,8 +16,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 
-public class EasyRuntimePermissionTransformer<T> implements ObservableTransformer<T, Boolean> {
-
+class PermissionRequestTransformer<T> implements ObservableTransformer<T, Boolean> {
 
     private static class ShouldRationaleTransformer<T> implements ObservableTransformer<T, PermissionType> {
 
@@ -81,15 +80,8 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
 
     private Activity mActivity;
 
-    public EasyRuntimePermissionTransformer(RxPermissions rxPermissions, String... permission) {
-        this(rxPermissions, null, null, permission);
-    }
+    public PermissionRequestTransformer(Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
 
-    public EasyRuntimePermissionTransformer(RxPermissions rxPermissions, Activity activity, ObservableOnSubscribe<Boolean> shouldShowRationaleListener, String... permission) {
-
-        if (rxPermissions == null) {
-            throw new NullPointerException();
-        }
         if (permission == null) {
             throw new NullPointerException();
         }
@@ -98,7 +90,7 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
         }
 
         mRequestPermissTipObserver = shouldShowRationaleListener;
-        this.rxPermissions = rxPermissions;
+        this.rxPermissions = new RxPermissions(activity);
         mPermission = permission;
         mActivity = activity;
     }
@@ -154,7 +146,7 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
 
                                                             if (!tipsIsAgree) {
                                                                 e.onError(
-                                                                        new RuntimePermissionException(RuntimePermissionException.TYPE.USER_REFUSE_TIPS)
+                                                                        new PermissionException(PermissionException.TYPE.USER_REFUSE_TIPS)
                                                                 );
                                                                 return;
                                                             }
@@ -199,12 +191,12 @@ public class EasyRuntimePermissionTransformer<T> implements ObservableTransforme
                         } else if (permission.shouldShowRequestPermissionRationale) {
 
                             e.onError(
-                                    new RuntimePermissionException(RuntimePermissionException.TYPE.USER_REFUSE)
+                                    new PermissionException(PermissionException.TYPE.USER_REFUSE)
                             );
                         } else {
 
                             e.onError(
-                                    new RuntimePermissionException(RuntimePermissionException.TYPE.REFUSE_NEVER_ASK)
+                                    new PermissionException(PermissionException.TYPE.REFUSE_NEVER_ASK)
                             );
                         }
 
