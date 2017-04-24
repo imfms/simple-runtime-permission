@@ -4,6 +4,7 @@ An easy runtime permission handler for Android, depends on tbruyelle's [RxPermis
 
 ## TODO
 
+- Strong Test
 - Exception Add Permission Field
 - ShouldShoultRequest Dialog Give Permission  
 - Add To Library
