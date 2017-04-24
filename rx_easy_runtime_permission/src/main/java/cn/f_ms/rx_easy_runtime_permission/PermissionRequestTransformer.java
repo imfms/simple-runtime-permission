@@ -2,7 +2,6 @@ package cn.f_ms.rx_easy_runtime_permission;
 
 import android.app.Activity;
 
-import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.Observable;
@@ -14,6 +13,10 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+
+import static cn.f_ms.rx_easy_runtime_permission.PermissionException.TYPE.PASS;
+import static cn.f_ms.rx_easy_runtime_permission.PermissionException.TYPE.REFUSE_NEVER_ASK;
+import static cn.f_ms.rx_easy_runtime_permission.PermissionException.TYPE.USER_REFUSE;
 
 
 class PermissionRequestTransformer<T> implements ObservableTransformer<T, Boolean> {
@@ -177,29 +180,44 @@ class PermissionRequestTransformer<T> implements ObservableTransformer<T, Boolea
      * @param e          Observer
      * @param permission permission
      */
-    private void requestPermission(@NonNull final ObservableEmitter<Boolean> e, String... permission) {
-        rxPermissions.requestEach(permission)
-                .subscribe(new Consumer<Permission>() {
+    private void requestPermission(@NonNull final ObservableEmitter<Boolean> e, final String... permission) {
 
-                    @Override
-                    public void accept(@NonNull Permission permission) throws Exception {
 
-                        if (permission.granted) {
+        rxPermissions.request(permission)
+                .zipWith(
+                        rxPermissions.shouldShowRequestPermissionRationale(mActivity, permission),
+                        new BiFunction<Boolean, Boolean, PermissionException.TYPE>() {
+                            @Override
+                            public PermissionException.TYPE apply(@NonNull Boolean requestResult, @NonNull Boolean shouldResult) throws Exception {
 
-                            e.onNext(true);
-                            e.onComplete();
-                        } else if (permission.shouldShowRequestPermissionRationale) {
-
-                            e.onError(
-                                    new PermissionException(PermissionException.TYPE.USER_REFUSE)
-                            );
-                        } else {
-
-                            e.onError(
-                                    new PermissionException(PermissionException.TYPE.REFUSE_NEVER_ASK)
-                            );
+                                if (requestResult) {
+                                    return PASS;
+                                } else if (shouldResult) {
+                                    return USER_REFUSE;
+                                } else {
+                                    return REFUSE_NEVER_ASK;
+                                }
+                            }
                         }
-
+                )
+                .subscribe(new Consumer<PermissionException.TYPE>() {
+                    @Override
+                    public void accept(@NonNull PermissionException.TYPE type) throws Exception {
+                        switch (type) {
+                            case REFUSE_NEVER_ASK:
+                                e.onError(
+                                        new PermissionException(PermissionException.TYPE.REFUSE_NEVER_ASK)
+                                );
+                                break;
+                            case USER_REFUSE:
+                                e.onError(
+                                        new PermissionException(PermissionException.TYPE.USER_REFUSE)
+                                );
+                                break;
+                            case PASS:
+                                e.onNext(true);
+                                break;
+                        }
                     }
                 });
     }
