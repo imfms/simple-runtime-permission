@@ -9,7 +9,6 @@ package cn.f_ms.easy_runtime_permission;
 
 public interface ShowRequestPermissionRationaleListener {
 
-
     /**
      * Show Request Permission Rationale Controler
      */
