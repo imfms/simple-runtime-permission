@@ -3,9 +3,13 @@
 # easy-rx-runtime-permission
 An easy runtime permission handler for Android, depends on tbruyelle's [RxPermissions](https://github.com/tbruyelle/RxPermissions)
 
-Gradle
+Gradle [![](https://jitpack.io/v/imfms/retrofit-rxjava-request-with-progress.svg)](https://jitpack.io/#imfms/retrofit-rxjava-request-with-progress)
 
-    compile 'com.github.imfms:easy-rx-runtime-permission:Vlatest.version' [![](https://jitpack.io/v/imfms/retrofit-rxjava-request-with-progress.svg)](https://jitpack.io/#imfms/retrofit-rxjava-request-with-progress)
+    repositories {
+     maven { url 'https://jitpack.io' }
+    }
+    
+    compile 'com.github.imfms:easy-rx-runtime-permission:Vlatest.version' 
   
 ## TODO
 
