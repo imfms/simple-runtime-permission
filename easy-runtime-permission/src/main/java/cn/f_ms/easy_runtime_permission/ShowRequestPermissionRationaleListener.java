@@ -25,5 +25,5 @@ public interface ShowRequestPermissionRationaleListener {
      * When Need Show Request
      * @param controler    controler
      */
-    void onShowRequestPermissionRationale(ShowRequestPermissionRationaleControler controler);
+    void onShowRequestPermissionRationale(ShowRequestPermissionRationaleControler controler, String[] permissions);
 }

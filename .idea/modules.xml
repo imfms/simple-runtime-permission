@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/easy-runtime-permission/easy-runtime-permission.iml" filepath="$PROJECT_DIR$/easy-runtime-permission/easy-runtime-permission.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easy-runtime-permission/easy-runtime-permission.iml" filepath="$PROJECT_DIR$/easy-runtime-permission/easy-runtime-permission.iml" />
       <module fileurl="file://$PROJECT_DIR$/easy-rx-runtime-permission.iml" filepath="$PROJECT_DIR$/easy-rx-runtime-permission.iml" />
       <module fileurl="file://$PROJECT_DIR$/rx_easy_runtime_permission/rx_easy_runtime_permission.iml" filepath="$PROJECT_DIR$/rx_easy_runtime_permission/rx_easy_runtime_permission.iml" />
     </modules>

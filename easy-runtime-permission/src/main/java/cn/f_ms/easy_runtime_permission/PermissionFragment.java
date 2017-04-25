@@ -7,8 +7,9 @@ import android.os.Build;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static android.R.attr.permission;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * Runtime Permission Request Adapter Fragment
@@ -19,18 +20,19 @@ import static android.R.attr.permission;
 
 public class PermissionFragment extends Fragment {
 
-    private final ArrayList<PermissionRequestBean> mRequestBeanList;
+    /**
+     * Permission Request Wrapper
+     */
+    private static class PermissionRequestBean {
 
-    /** Permission Request Wrapper */
-    public static class PermissionRequestBean {
-        public final String[] permissions;
-        public final PermissionListener listener;
+        final String[] permissions;
+        final PermissionListener listener;
 
-        public PermissionRequestBean() {
-            this(null, null)
+        PermissionRequestBean() {
+            this(null, null);
         }
 
-        public PermissionRequestBean(String[] permissions, PermissionListener listener) {
+        PermissionRequestBean(String[] permissions, PermissionListener listener) {
             this.permissions = permissions;
             this.listener = listener;
         }
@@ -42,30 +44,29 @@ public class PermissionFragment extends Fragment {
         }
     }
 
-    public static final int REQUEST_CODE_RUNTIME_PERMISSION = Integer.MAX_VALUE;
+    /**  save request list*/
+    private ArrayList<PermissionRequestBean> mRequestBeanList;
 
-    public PermissionFragment() {
-        mRequestBeanList = new ArrayList<>(2);
-    }
+    public PermissionFragment() {}
 
     /**
      * request permission
-     * @param listener       permission result callback listener
-     * @param permissions    permissions
+     * when API_VERSION less API23 return Permission.isGranted = true
+     *
+     * @param listener    permission result callback listener
+     * @param permissions permissions
      */
-    public void request(PermissionListener listener, String... permissions) {
+    @TargetApi(Build.VERSION_CODES.M)
+    void request(PermissionListener listener, String... permissions) {
 
-        if (listener == null) {
-            throw new IllegalArgumentException("Permission Listener can't be null");
+        if (mRequestBeanList == null) {
+            mRequestBeanList = new ArrayList<>(2);
         }
 
-        if (permissions == null
-                || permissions.length == 0) {
-            throw new IllegalArgumentException("Permission can't be empty");
-        }
+        PermissionRequestBean permissionRequestBean = new PermissionRequestBean(permissions, listener);
+        mRequestBeanList.add(permissionRequestBean);
 
-
-
+        requestPermissions(permissions, permissionRequestBean.hashCode());
     }
 
     /**
@@ -73,8 +74,8 @@ public class PermissionFragment extends Fragment {
      * when API_VERSION less API23 return false
      */
     @TargetApi(Build.VERSION_CODES.M)
-    public boolean isRevoked(String permission) {
-        return isM() && getActivity().getPackageManager().isPermissionRevokedByPolicy(permission, getActivity().getPackageName());
+    boolean isRevoked(String permission) {
+        return getActivity().getPackageManager().isPermissionRevokedByPolicy(permission, getActivity().getPackageName());
     }
 
     /**
@@ -82,26 +83,72 @@ public class PermissionFragment extends Fragment {
      * when API_VERSION less API23 return true
      */
     @TargetApi(Build.VERSION_CODES.M)
-    public boolean isGranted(String permission) {
-        return !isM() || getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    boolean isGranted(String permission) {
+        return getActivity().checkSelfPermission(permission) == PERMISSION_GRANTED;
     }
 
-    /**  whether android api versioin more than 6.0/M */
-    public boolean isM() {
+    /**
+     * whether android api versioin more than 6.0/M
+     */
+    boolean isM() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
     /**
      * is permission should show request rationale
      * when API_VERSION less API23 return false
-     * */
+     */
     @TargetApi(Build.VERSION_CODES.M)
-    public boolean isShouldShowRequestPermissionRationale(String permission) {
-        return isM() && getActivity().shouldShowRequestPermissionRationale(permission);
+    boolean isShouldShowRequestPermissionRationale(String permission) {
+        return getActivity().shouldShowRequestPermissionRationale(permission);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        PermissionRequestBean requestBean = isContainPermissionRequest(requestCode, mRequestBeanList);
+        if (requestBean == null) {
+            return;
+        }
+
+        Permission[] resultPermissions = new Permission[permissions.length];
+        for (int x = 0; x < resultPermissions.length; x++) {
+
+            String permissionStr = permissions[x];
+            boolean isGranted = grantResults[x] == PackageManager.PERMISSION_GRANTED;
+            boolean isShouldShowRequestPermissionRationale = isShouldShowRequestPermissionRationale(permissionStr);
+
+            resultPermissions[x] = new Permission(
+                    permissionStr, isGranted, isShouldShowRequestPermissionRationale
+            );
+        }
+
+        requestBean.listener.onPermissionRequestResult(resultPermissions);
+
+        removeFromList(requestBean);
+    }
+
+    private <T> T isContainPermissionRequest(int requestCode, List<T> list) {
+
+        if (list == null
+                || list.isEmpty()) {
+            return null;
+        }
+
+        for (T t : list) {
+            if (requestCode == t.hashCode()) {
+                return t;
+            }
+        }
+
+        return null;
+    }
+
+    private void removeFromList(PermissionRequestBean requestBean) {
+        mRequestBeanList.remove(requestBean);
+        if (mRequestBeanList.isEmpty()) {
+            mRequestBeanList = null;
+        }
     }
 }

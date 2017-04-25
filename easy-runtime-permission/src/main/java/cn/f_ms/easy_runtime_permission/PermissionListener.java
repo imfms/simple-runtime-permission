@@ -6,6 +6,5 @@ package cn.f_ms.easy_runtime_permission;
  * @time 2017/04/25
  */
 public interface PermissionListener {
-
     void onPermissionRequestResult(Permission[] permissions);
 }

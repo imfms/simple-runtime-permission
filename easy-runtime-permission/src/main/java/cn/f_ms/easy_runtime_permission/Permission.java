@@ -12,7 +12,7 @@ public class Permission {
     public final boolean isGranted;
     public final boolean isShouldShowRequestPermissionRationale;
 
-    public Permission(String name, boolean isGranted) { this(name, false, false); }
+    public Permission(String name, boolean isGranted) { this(name, isGranted, false); }
     public Permission(String name, boolean isGranted, boolean isShouldShowRequestPermissionRationale) {
         this.name = name;
         this.isGranted = isGranted;
@@ -31,7 +31,6 @@ public class Permission {
         if (isShouldShowRequestPermissionRationale != that.isShouldShowRequestPermissionRationale)
             return false;
         return name.equals(that.name);
-
     }
 
     @Override
