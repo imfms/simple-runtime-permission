@@ -21,6 +21,7 @@ public class PermissionFragment extends Fragment {
 
     /**
      * Permission Callback Listener
+     *
      * @author f_ms
      * @time 2017/04/25
      */
@@ -48,6 +49,11 @@ public class PermissionFragment extends Fragment {
         public int hashCode() {
             int result = Arrays.hashCode(permissions);
             result = 31 * result + (listener != null ? listener.hashCode() : 0);
+
+            if (result < 0) {
+                result = -result;
+            }
+
             return result;
         }
     }
