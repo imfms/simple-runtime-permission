@@ -9,7 +9,7 @@ import static android.R.id.empty;
  * @time 2017/4/26
  */
 
-public class RuntimePermissionHelper {
+public class SimpleRuntimePermissionHelper {
 
     public static class PermissionRequest {
 

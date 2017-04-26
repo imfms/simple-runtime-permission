@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import cn.f_ms.runtimepermission.simple.Permission;
-import cn.f_ms.runtimepermission.simple.RuntimePermissionHelper;
+import cn.f_ms.runtimepermission.simple.SimpleRuntimePermissionHelper;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestPermission() {
 
-        RuntimePermissionHelper.with(mSimplePermission)
+        SimpleRuntimePermissionHelper.with(mSimplePermission)
                 .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
                 .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
                     @Override
