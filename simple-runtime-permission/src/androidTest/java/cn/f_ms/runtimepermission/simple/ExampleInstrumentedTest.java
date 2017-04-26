@@ -1,4 +1,4 @@
-package cn.f_ms.easy_runtime_permission;
+package cn.f_ms.runtimepermission.simple;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("cn.f_ms.easy_runtime_permission.test", appContext.getPackageName());
+        assertEquals("cn.f_ms.runtimepermission.simple.test", appContext.getPackageName());
     }
 }

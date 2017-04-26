@@ -9,15 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import cn.f_ms.easy_runtime_permission.EasyRuntimePermission;
-import cn.f_ms.easy_runtime_permission.Permission;
-import cn.f_ms.easy_runtime_permission.PermissionFragment;
-import cn.f_ms.easy_runtime_permission.ShowRequestPermissionRationaleListener;
+import cn.f_ms.runtimepermission.simple.EasyRuntimePermission;
+import cn.f_ms.runtimepermission.simple.Permission;
+import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private Activity mActivity;
-    private PermissionFragment mFragment;
     private EasyRuntimePermission easyPermission;
 
     @Override

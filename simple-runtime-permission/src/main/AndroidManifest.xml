@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-          package="cn.f_ms.easy_runtime_permission"
+          package="cn.f_ms.runtimepermission.simple"
 >
 
     <application android:allowBackup="true"

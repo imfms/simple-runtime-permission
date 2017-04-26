@@ -1,4 +1,4 @@
-package cn.f_ms.easy_runtime_permission;
+package cn.f_ms.runtimepermission.simple;
 
 /**
  * Show Request Permission RationaleListener

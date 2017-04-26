@@ -1,1 +1,1 @@
-include ':app', ':rx_easy_runtime_permission', ':easy-runtime-permission'
+include ':app', ':rx_easy_runtime_permission', ':simple-runtime-permission'
