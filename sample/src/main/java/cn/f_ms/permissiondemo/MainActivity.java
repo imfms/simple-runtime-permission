@@ -13,15 +13,13 @@ import cn.f_ms.runtimepermission.simple.Permission;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermissionHelper;
-import cn.f_ms.runtimepermission.simple.rxjava2.None;
 import cn.f_ms.runtimepermission.simple.rxjava2.PermissionException;
 import cn.f_ms.runtimepermission.simple.rxjava2.RxSimpleRuntimePermission;
-import cn.f_ms.runtimepermission.simple.rxjava2.RxSimpleRuntimePermissionTransform;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.internal.operators.maybe.MaybeCache;
+import rx.Subscriber;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -62,23 +60,22 @@ public class MainActivity extends AppCompatActivity {
     private void requestPermissionWithRxJava2(final String requestSuccessStr) {
         RxSimpleRuntimePermission rxSimpleRuntimePermission = new RxSimpleRuntimePermission(mActivity);
 
-        rxSimpleRuntimePermission.request(new MyShowRequestPermissionRationaleListener(mActivity), Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
-                .subscribe(new Observer<None>() {
+        Observable.just(requestSuccessStr)
+                .compose(rxSimpleRuntimePermission.<String>compose(new MyShowRequestPermissionRationaleListener(mActivity), Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE))
+                .subscribe(new Observer<String>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(@NonNull None none) {
-                        Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
+                    public void onNext(@NonNull String s) {
+                        Toast.makeText(mActivity, s, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        if (e instanceof PermissionException) {
-                            Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+
                     }
 
                     @Override
@@ -86,34 +83,31 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
-//        Observable.just(requestSuccessStr)
-//                .compose(rxSimpleRuntimePermission.<String>compose(new MyShowRequestPermissionRationaleListener(mActivity), Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE))
-//                .subscribe(new Observer<String>() {
-//                    @Override
-//                    public void onSubscribe(@NonNull Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(@NonNull String s) {
-//                        Toast.makeText(mActivity, s, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onError(@NonNull Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
     }
 
     private void requestPermissionWithRxJava1(String requestSuccessStr) {
+        cn.f_ms.runtimepermission.simple.rxjava1.RxSimpleRuntimePermission rxSimpleRuntimePermission = new cn.f_ms.runtimepermission.simple.rxjava1.RxSimpleRuntimePermission(mActivity);
 
+        rx.Observable.just(requestSuccessStr)
+                .compose(rxSimpleRuntimePermission.<String>compose(new MyShowRequestPermissionRationaleListener(mActivity), Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE))
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof PermissionException) {
+                            Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Toast.makeText(mActivity, s, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void requestPermissionWithBase(final String requestSuccessStr) {

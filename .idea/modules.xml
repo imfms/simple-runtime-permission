@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission/simple-runtime-permission.iml" filepath="$PROJECT_DIR$/simple-runtime-permission/simple-runtime-permission.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-project.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-rxjava1/simple-runtime-permission-rxjava1.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-rxjava1/simple-runtime-permission-rxjava1.iml" />
       <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-rxjava2/simple-runtime-permission-rxjava2.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-rxjava2/simple-runtime-permission-rxjava2.iml" />
     </modules>
   </component>
