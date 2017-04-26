@@ -2,7 +2,6 @@ package cn.f_ms.easy_runtime_permission;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
-import android.content.pm.PackageManager;
 import android.os.Build;
 
 import java.util.ArrayList;
@@ -21,18 +20,27 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class PermissionFragment extends Fragment {
 
     /**
+     * Permission Callback Listener
+     * @author f_ms
+     * @time 2017/04/25
+     */
+    interface OnRequestPermissionsResult {
+        void onRequestPermissionsResult(String[] permissions, int[] grantResults);
+    }
+
+    /**
      * Permission Request Wrapper
      */
     private static class PermissionRequestBean {
 
         final String[] permissions;
-        final PermissionListener listener;
+        final OnRequestPermissionsResult listener;
 
         PermissionRequestBean() {
             this(null, null);
         }
 
-        PermissionRequestBean(String[] permissions, PermissionListener listener) {
+        PermissionRequestBean(String[] permissions, OnRequestPermissionsResult listener) {
             this.permissions = permissions;
             this.listener = listener;
         }
@@ -57,7 +65,7 @@ public class PermissionFragment extends Fragment {
      * @param permissions permissions
      */
     @TargetApi(Build.VERSION_CODES.M)
-    void request(PermissionListener listener, String... permissions) {
+    void request(OnRequestPermissionsResult listener, String... permissions) {
 
         if (mRequestBeanList == null) {
             mRequestBeanList = new ArrayList<>(2);
@@ -112,19 +120,7 @@ public class PermissionFragment extends Fragment {
             return;
         }
 
-        Permission[] resultPermissions = new Permission[permissions.length];
-        for (int x = 0; x < resultPermissions.length; x++) {
-
-            String permissionStr = permissions[x];
-            boolean isGranted = grantResults[x] == PackageManager.PERMISSION_GRANTED;
-            boolean isShouldShowRequestPermissionRationale = isShouldShowRequestPermissionRationale(permissionStr);
-
-            resultPermissions[x] = new Permission(
-                    permissionStr, isGranted, isShouldShowRequestPermissionRationale
-            );
-        }
-
-        requestBean.listener.onPermissionRequestResult(resultPermissions);
+        requestBean.listener.onRequestPermissionsResult(permissions, grantResults);
 
         removeFromList(requestBean);
     }

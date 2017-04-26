@@ -12,7 +12,7 @@ public interface ShowRequestPermissionRationaleListener {
     /**
      * Show Request Permission Rationale Controler
      */
-    public interface ShowRequestPermissionRationaleControler {
+    interface ShowRequestPermissionRationaleControler {
 
         /** When User Agree */
         void doContinue();
@@ -26,4 +26,10 @@ public interface ShowRequestPermissionRationaleListener {
      * @param controler    controler
      */
     void onShowRequestPermissionRationale(ShowRequestPermissionRationaleControler controler, String[] permissions);
+
+    /**
+     * when method onShowRequestPermissionRationale callback, developer called the argument 'controler.doCancel()'
+     * @param permissions    refuse request rationale permissions
+     */
+    void onRequestPermissionRationaleRefuse(String[] permissions);
 }

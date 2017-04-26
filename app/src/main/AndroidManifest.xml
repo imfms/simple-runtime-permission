@@ -3,6 +3,7 @@
           package="cn.f_ms.permissiondemo">
 
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
         android:allowBackup="true"
