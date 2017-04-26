@@ -1,1 +1,1 @@
-include ':sample', ':simple-runtime-permission'
+include ':sample', ':simple-runtime-permission', ':simple-runtime-permission-rxjava2'
