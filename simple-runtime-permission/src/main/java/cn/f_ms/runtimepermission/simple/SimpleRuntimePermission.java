@@ -8,12 +8,12 @@ import android.content.pm.PackageManager;
 import java.util.ArrayList;
 
 /**
- * EasyRuntimePermission Helper Class
+ * SimpleRuntimePermission Helper Class
  *
  * @author _Ms
  * @time 2017/4/26
  */
-public class EasyRuntimePermission {
+public class SimpleRuntimePermission {
 
     /**
      * Permission Callback Listener
@@ -40,12 +40,12 @@ public class EasyRuntimePermission {
         );
     }
 
-    public static final String TAG = "tag_easy_permission";
+    public static final String TAG = "tag_simple_runtime_permission";
 
     private PermissionFragment mPermissionFragment;
     private Activity mActivity;
 
-    public EasyRuntimePermission(Activity activity) {
+    public SimpleRuntimePermission(Activity activity) {
 
         if (activity == null) {
             throw new IllegalArgumentException("activity can't be empty");
