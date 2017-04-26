@@ -9,15 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import cn.f_ms.runtimepermission.simple.EasyRuntimePermission;
 import cn.f_ms.runtimepermission.simple.Permission;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
+import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private Activity mActivity;
-    private EasyRuntimePermission easyPermission;
+    private SimpleRuntimePermission mSimplePermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,20 +26,20 @@ public class MainActivity extends AppCompatActivity {
 
         mActivity = this;
 
-        easyPermission = new EasyRuntimePermission(mActivity);
+        mSimplePermission = new SimpleRuntimePermission(mActivity);
 
         findViewById(R.id.btn_click).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestPermission("Congratulation, You Geted Permission");
+                requestPermission();
             }
         });
 
     }
 
-    private void requestPermission(String s) {
+    private void requestPermission() {
 
-        easyPermission.request(new EasyRuntimePermission.PermissionListener() {
+        mSimplePermission.request(new SimpleRuntimePermission.PermissionListener() {
             @Override
             public void onAllPermissionGranted() {
                 Toast.makeText(mActivity, "AllGet!", Toast.LENGTH_SHORT).show();
@@ -59,15 +59,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onShowRequestPermissionRationale(final ShowRequestPermissionRationaleControler controler, String[] permissions) {
                 new AlertDialog.Builder(mActivity)
-                        .setTitle("提示")
-                        .setMessage("给个权限呗~")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        .setTitle("Tips")
+                        .setMessage("Please Give Me Those Permissions")
+                        .setPositiveButton("Yes, I Will", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 controler.doContinue();
                             }
                         })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Sorry, I can't", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 controler.doCancel();
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRequestPermissionRationaleRefuse(String[] permissions) {
-                Toast.makeText(mActivity, "你居然不同意", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "Well, You refused.", Toast.LENGTH_SHORT).show();
             }
         }, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
 
