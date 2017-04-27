@@ -203,11 +203,29 @@ class Permission {
                         @Override
                         public void onShowRequestPermissionRationale(ShowRequestPermissionRationaleControler controler, String[] permissions) {
 
+                            new AlertDialog.Builder(mActivity)
+                                    .setTitle("PermissionRequestTip")
+                                    .setMessage("I need those permissions, please select agree")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            controler.doContinue();
+                                        }
+                                    })
+                                    .setNegativeButton("Refuse", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            controler.doCancel();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+
                         }
 
                         @Override
                         public void onRequestPermissionRationaleRefuse(String[] permissions) {
-
+                           Toast.makeText(mActivity, "Fail, user refused request permission tip", Toast.LENGTH_SHORT).show();
                         }
                     }
                     , Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
