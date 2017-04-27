@@ -253,7 +253,7 @@ class Permission {
 
 ### For RxJava2
 
-> 同 support for rxjava1
+> 同 For RxJava1
 
 ## 相关链接
 - Android官方运行时权限文档 [使用系统权限](https://developer.android.com/training/permissions/index.html)
