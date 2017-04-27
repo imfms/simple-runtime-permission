@@ -85,7 +85,7 @@ class Permission {
                     Permission[] refusePermissionResult // 请求的所有权限中被拒绝的结果集
             )
             
-    - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [运行时请求权限->解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
+    - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [运行时请求权限#解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
         
             // 当需要展示请求权限解释提示
             void onShowRequestPermissionRationale(
@@ -104,8 +104,8 @@ class Permission {
     
     - String[] 需要请求权限解释的权限字符串集
     - ShowRequestPermissionRationaleControler 控制器
-        - void doContinue() // 向系统请求权限(用户同意)
-        - void doCancel() // 取消权限请求动作(当用户拒绝)
+        - void doContinue() // 向系统请求权限(用户选择同意)
+        - void doCancel() // 取消权限请求动作(用户选择拒绝)
         
 4. 使用示例
 
@@ -166,7 +166,7 @@ class Permission {
             .execute();
      ```
      
-### support for rxjava1
+### For RxJava1
 
 1. 实例化 RxSimpleRuntimePermission
 
@@ -251,31 +251,9 @@ class Permission {
     ```
     
 
-### support for rxjava2        
+### For RxJava2
 
 > 同 support for rxjava1
 
 ## 相关链接
-- 官方文档 [使用系统权限](https://developer.android.com/training/permissions/index.html)
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+- Android官方运行时权限文档 [使用系统权限](https://developer.android.com/training/permissions/index.html)

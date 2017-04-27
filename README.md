@@ -1,10 +1,12 @@
 [![](https://jitpack.io/v/imfms/simple-runtime-permission.svg)](https://jitpack.io/#imfms/simple-runtime-permission)
 
-
 # simple-runtime-permission
 
 A simple Android runtime permission handler
 
+[中文文档](README_CN.md)
+
+'Joke with my poor english'
 
 This library refers from those library, give original author high respect.
 > The core to achieve the idea of learning and reference [tbruyelle/RxPermissions](https://github.com/tbruyelle/RxPermissions)
@@ -59,13 +61,13 @@ class Permission {
 ```
 
 ### base_library
-通过回调方式对请求权限进行响应
+callback mode response request
 
-1. 实例化类 SimpleRuntimePermission
+1. Instance Class SimpleRuntimePermission
 
         SimpleRuntimePermission(Activity activity)
 
-2. 通过类SimpleRuntimePermission.request方法请求权限
+2. Invoke SimpleRuntimePermission.request to request permission
 
         void request(
             PermissionListener listener,
@@ -73,44 +75,44 @@ class Permission {
             String... permissions
         )
         
-    - String... 权限字符串可变数组，接受可变String参数或String数组，可从 Manifest.permission.* 引用获取权限字符串
-    - PermissionListener 权限请求回调监听器
+    - String... Permission string array, accept mulit args, recommend select from Manifest.permission.*
+    - PermissionListener Permission request callback listener
     
-            // 当所有指定请求权限被用户同意
+            // When all of request permissions were granted
             void onAllPermissionGranted()
 
-            // 当有任何一个权限被拒绝
+            // When any permissions were refused
             void onPermissionRefuse(
-                    Permission[] allPermissionsResult, // 请求的所有权限的结果集, 包含以下两种结果集
-                    Permission[] grantedPermissionResult, // 请求的所有权限中成功的结果集
-                    Permission[] refusePermissionResult // 请求的所有权限中被拒绝的结果集
+                    Permission[] allPermissionsResult, // All of request permissions
+                    Permission[] grantedPermissionResult, // All of granted permissions from request
+                    Permission[] refusePermissionResult // All of refused permissions from request
             )
             
-    - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [运行时请求权限->解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
+    - [Optional] ShowRequestPermissionRationaleListener ShowRequestPermissionRationale callback listener, can refer official document [Requesting Permissions at Run Time#Explain why the app needs permissions](https://developer.android.com/training/permissions/requesting.html#explain)
         
-            // 当需要展示请求权限解释提示
+            // When need show request permission rationale tip
             void onShowRequestPermissionRationale(
                 ShowRequestPermissionRationaleControler controler,
                 String[] permissions
             )
         
             /*
-            当请求权限解释提示被用户拒绝
-            ShowRequestPermissionRationaleControler.doCancel()被调用时
+            When request permission rationale refuse
+            when ShowRequestPermissionRationaleControler.doCancel() invoke
             */
             void onRequestPermissionRationaleRefuse(
                 String[] permissions
             )
                 
     
-    - String[] 需要请求权限解释的权限字符串集
-    - ShowRequestPermissionRationaleControler 控制器
-        - void doContinue() // 向系统请求权限(用户同意)
-        - void doCancel() // 取消权限请求动作(当用户拒绝)
+    - String[] Need show request permission rationale permission string array
+    - ShowRequestPermissionRationaleControler Controler
+        - void doContinue() // Do request permission from system (user select agree)
+        - void doCancel() // Cancel request action (user select refuse)
         
-4. 使用示例
+4. Sample
 
-    > 请求读取通讯录联系人、拨打电话权限，当用户曾经拒绝过权限获取(未勾选不再提示)时提示用户为什么我们需要这个权限
+    > Request 'read contacts' & 'call phone' permission, When user has refused this permission(not select never tip)  tell user why need this permission
     
     ```java
     SimpleRuntimePermission simplePermission = new SimpleRuntimePermission(mActivity);
@@ -158,7 +160,7 @@ class Permission {
     );
     ```
     
-5. 为方便使用，另提供了一个辅助类'SimpleRuntimePermissionHelper'，链式风格 (参考[yanzhenjie/AndPermission](https://github.com/yanzhenjie/AndPermission))
+5. For easy use, support a helper class 'SimpleRuntimePermissionHelper', it's chain mode (refer[yanzhenjie/AndPermission](https://github.com/yanzhenjie/AndPermission))
     ```java
     SimpleRuntimePermissionHelper.with(SimpleRuntimePermission)
             .permission(...)
@@ -167,18 +169,18 @@ class Permission {
             .execute();
      ```
      
-### support for rxjava1
+### For RxJava1
 
-1. 实例化 RxSimpleRuntimePermission
+1.  Instance RxSimpleRuntimePermission
 
         RxSimpleRuntimePermission(Activity activity)
         
-2. 调用请求权限方法
-    - compose 使用Rxjava compose操作符对请求权限行为进行合并，当遇到错误则封装到PermissionException并抛出到订阅者onError
+2. Invoke request permision method
+    - compose Use RxJava operator 'compose' to compose request permission action, when get refuse result it will wrapper result to PermissionException for subscriber's onError()
     
             <T> RxSimpleRuntimePermissionTransform<T> compose(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
     
-    - request 生成被观察者，开发者直接订阅结果，当遇到错误则封装到PermissionException并抛出到订阅者onError
+    - request Create observer, developer can subscribe result, when get refuse result it will wrapper result to PermissionException for subscriber's onError()
 
             Observable<None> request(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
 
@@ -191,9 +193,9 @@ class Permission {
     }
     ```
     
-3. 使用示例
+3. Sample
 
-    > 请求读取通讯录联系人、拨打电话权限，当用户曾经拒绝过权限获取(未勾选不再提示)时提示用户为什么我们需要这个权限
+    > Request 'read contacts' & 'call phone' permission, When user has refused this permission(not select never tip)  tell user why need this permission
     
     ```java
     RxSimpleRuntimePermission rxSimpleRuntimePermission = new RxSimpleRuntimePermission(mActivity);
@@ -252,31 +254,9 @@ class Permission {
     ```
     
 
-### support for rxjava2        
+### For RxJava2
 
-> 同 support for rxjava1
+> Same with For RxJava1
 
-## 相关链接
-- 官方文档 [使用系统权限](https://developer.android.com/training/permissions/index.html)
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+## Links
+- Android Runtime Permission Official Document [Working with System Permissions](https://developer.android.com/training/permissions/index.html)
