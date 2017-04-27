@@ -5,7 +5,7 @@
 
 使用简单的Android动态权限处理器
 
-本项目参考了以下仓库，在此其原作者致以崇高敬意
+本项目参考了以下仓库，在此向原作者致以崇高敬意
 > 核心实现思想学习及参考了[tbruyelle/RxPermissions](https://github.com/tbruyelle/RxPermissions)
 
 - [tbruyelle/RxPermissions](https://github.com/tbruyelle/RxPermissions)
