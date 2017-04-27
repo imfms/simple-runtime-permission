@@ -32,17 +32,17 @@ Android API_LEVEL >= 11
             /*
             BaseLibrary
             */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission:V${最新版本}'
+            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission:V${latest.version}'
             
             /*
             Support For RxJava1
             */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava1:V${最新版本}'
+            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava1:V${latest.version}'
             
             /*
             Support For RxJava2
             */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:V${最新版本}'
+            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:V${latest.version}'
         }
         
 ## How to use it
