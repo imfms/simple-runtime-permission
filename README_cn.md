@@ -62,24 +62,19 @@ class Permission {
 
 1. 实例化类 SimpleRuntimePermission
 
-        ```java
         SimpleRuntimePermission(Activity activity)
-        ```
 
 2. 通过类SimpleRuntimePermission.request方法请求权限
 
-        ```java
         void request(
             PermissionListener listener,
             ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener,
             String... permissions
         )
-        ```
         
     - String... 权限字符串可变数组，接受可变String参数或String数组，可从 Manifest.permission.* 引用获取权限字符串
     - PermissionListener 权限请求回调监听器
     
-            ```java
             // 当所有指定请求权限被用户同意
             void onAllPermissionGranted()
 
@@ -89,11 +84,9 @@ class Permission {
                     Permission[] grantedPermissionResult, // 请求的所有权限中成功的结果集
                     Permission[] refusePermissionResult // 请求的所有权限中被拒绝的结果集
             )
-            ```
             
     - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器 参考官方文档 [在运行时请求权限->解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
         
-            ```java
             // 当需要展示请求权限解释提示
             void onShowRequestPermissionRationale(
                 ShowRequestPermissionRationaleControler controler,
@@ -107,7 +100,6 @@ class Permission {
             void onRequestPermissionRationaleRefuse(
                 String[] permissions
             )
-            ```
             
         - String[] 需要请求权限解释的权限字符串集
         - ShowRequestPermissionRationaleControler 控制器
