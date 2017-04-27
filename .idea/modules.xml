@@ -2,9 +2,16 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/easy-rx-runtime-permission.iml" filepath="$PROJECT_DIR$/easy-rx-runtime-permission.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rx_easy_runtime_permission/rx_easy_runtime_permission.iml" filepath="$PROJECT_DIR$/rx_easy_runtime_permission/rx_easy_runtime_permission.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission/simple-runtime-permission.iml" filepath="$PROJECT_DIR$/simple-runtime-permission/simple-runtime-permission.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission/simple-runtime-permission.iml" filepath="$PROJECT_DIR$/simple-runtime-permission/simple-runtime-permission.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-project.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-rxjava1/simple-runtime-permission-rxjava1.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-rxjava1/simple-runtime-permission-rxjava1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-rxjava1/simple-runtime-permission-rxjava1.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-rxjava1/simple-runtime-permission-rxjava1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-rxjava2/simple-runtime-permission-rxjava2.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-rxjava2/simple-runtime-permission-rxjava2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-runtime-permission-rxjava2/simple-runtime-permission-rxjava2.iml" filepath="$PROJECT_DIR$/simple-runtime-permission-rxjava2/simple-runtime-permission-rxjava2.iml" />
     </modules>
   </component>
 </project>
