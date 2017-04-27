@@ -170,22 +170,16 @@ class Permission {
 
 1. 实例化 RxSimpleRuntimePermission
 
-        ```java
         RxSimpleRuntimePermission(Activity activity)
-        ```
         
 2. 调用请求权限方法
     - compose 使用Rxjava compose操作符对请求权限行为进行合并，当遇到错误则封装到PermissionException并抛出到订阅者onError
     
-            ```java
             <T> RxSimpleRuntimePermissionTransform<T> compose(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
-            ```
     
     - request 生成被观察者，开发者直接订阅结果，当遇到错误则封装到PermissionException并抛出到订阅者onError
 
-            ```java
             Observable<None> request(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
-            ```
 
     - Permisssion Exception
     ```java
