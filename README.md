@@ -45,7 +45,7 @@ Android API_LEVEL >= 11
             compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:V${latest.version}'
         }
         
-## How to use it
+## How to use
 
 
 0. Declaration Permission in Manifest
@@ -60,7 +60,7 @@ class Permission {
 }
 ```
 
-### base_library
+### Base Library
 callback mode response request
 
 1. Instance Class SimpleRuntimePermission
