@@ -87,24 +87,26 @@ class Permission {
             
     - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [运行时请求权限->解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
         
-            // 当需要展示请求权限解释提示
-            void onShowRequestPermissionRationale(
-                ShowRequestPermissionRationaleControler controler,
-                String[] permissions
-            )
+        
+    // 当需要展示请求权限解释提示
+    void onShowRequestPermissionRationale(
+        ShowRequestPermissionRationaleControler controler,
+        String[] permissions
+    )
+
+    /*
+    当请求权限解释提示被用户拒绝
+    ShowRequestPermissionRationaleControler.doCancel()被调用时
+    */
+    void onRequestPermissionRationaleRefuse(
+        String[] permissions
+    )
             
-            /*
-            当请求权限解释提示被用户拒绝
-            ShowRequestPermissionRationaleControler.doCancel()被调用时
-            */
-            void onRequestPermissionRationaleRefuse(
-                String[] permissions
-            )
-            
-        - String[] 需要请求权限解释的权限字符串集
-        - ShowRequestPermissionRationaleControler 控制器
-            - void doContinue() // 向系统请求权限(用户同意)
-            - void doCancel() // 取消权限请求动作(当用户拒绝)
+
+- String[] 需要请求权限解释的权限字符串集
+- ShowRequestPermissionRationaleControler 控制器
+    - void doContinue() // 向系统请求权限(用户同意)
+    - void doCancel() // 取消权限请求动作(当用户拒绝)
         
 4. 使用示例
 
