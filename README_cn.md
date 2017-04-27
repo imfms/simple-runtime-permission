@@ -85,7 +85,7 @@ class Permission {
                     Permission[] refusePermissionResult // 请求的所有权限中被拒绝的结果集
             )
             
-    - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器 参考官方文档 [在运行时请求权限->解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
+    - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [在运行时请求权限->解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
         
             // 当需要展示请求权限解释提示
             void onShowRequestPermissionRationale(
