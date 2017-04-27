@@ -6,7 +6,7 @@ A simple Android runtime permission handler
 
 [中文文档](README_CN.md)
 
-'Joke with my poor English'
+`Joke with my poor English`
 
 This library refers from those library, give original author high respect.
 > The core to achieve the idea of learning and reference [tbruyelle/RxPermissions](https://github.com/tbruyelle/RxPermissions)
