@@ -82,11 +82,7 @@ callback mode response request
             void onAllPermissionGranted()
 
             // When any permissions were refused
-            void onPermissionRefuse(
-                    Permission[] allPermissionsResult, // All of request permissions
-                    Permission[] grantedPermissionResult, // All of granted permissions from request
-                    Permission[] refusePermissionResult // All of refused permissions from request
-            )
+            void onPermissionRefuse(PermissionRefuseResultHelper resultHelper)
             
     - [Optional] ShowRequestPermissionRationaleListener ShowRequestPermissionRationale callback listener, can refer official document [Requesting Permissions at Run Time#Explain why the app needs permissions](https://developer.android.com/training/permissions/requesting.html#explain)
         
@@ -125,7 +121,7 @@ callback mode response request
                 }
 
                 @Override
-                public void onPermissionRefuse(Permission[] allPermissionsResult, Permission[] grantedPermissionResult, Permission[] refusePermissionResult) {
+                public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
                     Toast.makeText(mActivity, "Fail, some permission were refused", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -187,9 +183,7 @@ callback mode response request
     - Permisssion Exception
     ```java
     public class PermissionException extends RuntimeException {
-        public final Permission[] allPermissionsResult;
-        public final Permission[] grantedPermissionResult;
-        public final Permission[] refusePermissionResult;
+        public final PermissionRefuseResultHelper result;
     }
     ```
     

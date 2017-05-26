@@ -79,12 +79,8 @@ class Permission {
             void onAllPermissionGranted()
 
             // 当有任何一个权限被拒绝
-            void onPermissionRefuse(
-                    Permission[] allPermissionsResult, // 请求的所有权限的结果集, 包含以下两种结果集
-                    Permission[] grantedPermissionResult, // 请求的所有权限中成功的结果集
-                    Permission[] refusePermissionResult // 请求的所有权限中被拒绝的结果集
-            )
-            
+            void onPermissionRefuse(PermissionRefuseResultHelper resultHelper)
+
     - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [运行时请求权限#解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
         
             // 当需要展示请求权限解释提示
@@ -122,7 +118,7 @@ class Permission {
                 }
 
                 @Override
-                public void onPermissionRefuse(Permission[] allPermissionsResult, Permission[] grantedPermissionResult, Permission[] refusePermissionResult) {
+                public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
                     Toast.makeText(mActivity, "Fail, some permission were refused", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -184,9 +180,7 @@ class Permission {
     - Permisssion Exception
     ```java
     public class PermissionException extends RuntimeException {
-        public final Permission[] allPermissionsResult;
-        public final Permission[] grantedPermissionResult;
-        public final Permission[] refusePermissionResult;
+        public final PermissionRefuseResultHelper result;
     }
     ```
     
