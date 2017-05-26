@@ -6,7 +6,7 @@ package cn.f_ms.runtimepermission.simple;
  * @author f-ms
  * @time 2017/4/25
  */
-public class Permission {
+public final class Permission {
 
     public final String name;
     public final boolean isGranted;

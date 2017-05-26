@@ -1,6 +1,7 @@
 package cn.f_ms.runtimepermission.simple.rxjava2;
 
 import cn.f_ms.runtimepermission.simple.Permission;
+import cn.f_ms.runtimepermission.simple.PermissionRefuseResultHelper;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermissionHelper;
@@ -44,9 +45,9 @@ public class RxSimpleRuntimePermissionTransform<T> implements ObservableTransfor
                                         }
 
                                         @Override
-                                        public void onPermissionRefuse(Permission[] allPermissionsResult, Permission[] grantedPermissionResult, Permission[] refusePermissionResult) {
+                                        public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
                                             e.onError(
-                                                    new PermissionException(allPermissionsResult, grantedPermissionResult, refusePermissionResult)
+                                                    new PermissionException(resultHelper)
                                             );
                                         }
                                     })
