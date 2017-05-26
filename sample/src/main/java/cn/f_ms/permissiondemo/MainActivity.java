@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import cn.f_ms.runtimepermission.simple.Permission;
+import cn.f_ms.runtimepermission.simple.PermissionRefuseResultHelper;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermissionHelper;
@@ -120,13 +120,17 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPermissionRefuse(Permission[] allPermissionsResult, Permission[] grantedPermissionResult, Permission[] refusePermissionResult) {
-                        String str = String.format("all: %s\ngranted: %s\nrefuse:%s",
-                                allPermissionsResult, grantedPermissionResult, refusePermissionResult
+                    public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
+                        String str = String.format("all: %s\ngranted: %s\nrefuse:%s\nnever_ask: %s",
+                                resultHelper.getAllPermissions(),
+                                resultHelper.getGrantPermissions(),
+                                resultHelper.getRefusePermissions(),
+                                resultHelper.getNeverAskAgainPermissions()
                         );
 
                         Toast.makeText(mActivity, str, Toast.LENGTH_SHORT).show();
                     }
+
                 })
                 .execute();
     }

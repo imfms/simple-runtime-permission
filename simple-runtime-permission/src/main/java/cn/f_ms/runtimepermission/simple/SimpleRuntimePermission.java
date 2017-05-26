@@ -29,15 +29,9 @@ public class SimpleRuntimePermission {
 
         /**
          * when some/all permission were refused
-         * @param allPermissionsResult       all of permission result
-         * @param grantedPermissionResult    all of granted permission result, maybe length == 0
-         * @param refusePermissionResult     all of refuse permission result, maybe length == 0
+         * @param resultHelper       request result helper
          */
-        void onPermissionRefuse(
-                Permission[] allPermissionsResult,
-                Permission[] grantedPermissionResult,
-                Permission[] refusePermissionResult
-        );
+        void onPermissionRefuse(PermissionRefuseResultHelper resultHelper);
     }
 
     public static final String TAG = "tag_simple_runtime_permission";
@@ -163,8 +157,6 @@ public class SimpleRuntimePermission {
                 else {
 
                     ArrayList<Permission> allPermissionList = new ArrayList<>(permissions.length);
-                    ArrayList<Permission> grantedPermissionList = new ArrayList<>(permissions.length / 2);
-                    ArrayList<Permission> refusedPermissionList = new ArrayList<>(permissions.length / 2);
 
                     /* ignore granted permission */
                     String[] grantedPermission = getAllGrantedPermission(permissions);
@@ -182,28 +174,18 @@ public class SimpleRuntimePermission {
 
                             Permission p = new Permission(permission, true);
                             allPermissionList.add(p);
-                            grantedPermissionList.add(p);
                         }
                         /* local refused permisssion */
                         else {
 
                             Permission p = new Permission(permission, false, isShouldShowRequestPermissionRationale(permission));
                             allPermissionList.add(p);
-                            refusedPermissionList.add(p);
                         }
                     }
 
                     // callback
                     listener.onPermissionRefuse(
-                            allPermissionList.toArray(
-                                    new Permission[allPermissionList.size()]
-                            ),
-                            grantedPermissionList.toArray(
-                                    new Permission[grantedPermissionList.size()]
-                            ),
-                            refusedPermissionList.toArray(
-                                    new Permission[refusedPermissionList.size()]
-                            )
+                            new PermissionRefuseResultHelper(allPermissionList)
                     );
                 }
 

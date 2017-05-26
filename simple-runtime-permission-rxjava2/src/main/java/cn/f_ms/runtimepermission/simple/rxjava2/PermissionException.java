@@ -1,8 +1,6 @@
 package cn.f_ms.runtimepermission.simple.rxjava2;
 
-import java.util.Arrays;
-
-import cn.f_ms.runtimepermission.simple.Permission;
+import cn.f_ms.runtimepermission.simple.PermissionRefuseResultHelper;
 
 /**
  * PermissionException
@@ -11,14 +9,12 @@ import cn.f_ms.runtimepermission.simple.Permission;
  */
 public class PermissionException extends RuntimeException {
 
-    public final Permission[] allPermissionsResult;
-    public final Permission[] grantedPermissionResult;
-    public final Permission[] refusePermissionResult;
+    public final PermissionRefuseResultHelper result;
 
-    public PermissionException(Permission[] allPermissionsResult, Permission[] grantedPermissionResult, Permission[] refusePermissionResult) {
-        super(Arrays.toString(refusePermissionResult));
-        this.allPermissionsResult = allPermissionsResult;
-        this.grantedPermissionResult = grantedPermissionResult;
-        this.refusePermissionResult = refusePermissionResult;
+    public PermissionException(PermissionRefuseResultHelper resultHelper) {
+        super(resultHelper.getRefusePermissions().toString());
+        result = resultHelper;
     }
+
+    public PermissionRefuseResultHelper getRefuseResult() {return result;}
 }
