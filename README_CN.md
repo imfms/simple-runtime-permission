@@ -158,8 +158,7 @@ class Permission {
     SimpleRuntimePermissionHelper.with(SimpleRuntimePermission)
             .permission(...)
             .showPermissionRationaleListener(...)
-            .resultListener(...)
-            .execute();
+            .execute(resultListener...);
      ```
      
 ### For RxJava1

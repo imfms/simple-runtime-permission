@@ -161,8 +161,7 @@ callback mode response request
     SimpleRuntimePermissionHelper.with(SimpleRuntimePermission)
             .permission(...)
             .showPermissionRationaleListener(...)
-            .resultListener(...)
-            .execute();
+            .execute(resultListener...);
      ```
      
 ### For RxJava1
