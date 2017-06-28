@@ -11,42 +11,45 @@ public class SimpleRuntimePermissionHelper {
 
     public static class PermissionRequest {
 
-        interface OnExecuteListener {
-            void onExecute(PermissionRequest permissionRequest);
-        }
+        private SimpleRuntimePermission mSimpleRuntimePermission;
+        private String[] mPermissions;
+        private ShowRequestPermissionRationaleListener mShowRequestPermissionRationaleListener;
 
-        private OnExecuteListener mOnExecuteListener;
-        private String[] permissions;
-        private SimpleRuntimePermission.PermissionListener resultListener;
-        private ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener;
-
-        PermissionRequest(OnExecuteListener listener) {
-            if (listener == null) {
-                throw new IllegalArgumentException("OnExecuteListener can't be empty");
+        PermissionRequest(SimpleRuntimePermission simpleRuntimePermission) {
+            if (simpleRuntimePermission == null) {
+                throw new IllegalArgumentException("simpleRuntimePermission can't be null");
             }
-            mOnExecuteListener = listener;
+
+            mSimpleRuntimePermission = simpleRuntimePermission;
         }
 
         public PermissionRequest permission(String... permissions) {
-            this.permissions = permissions;
+            this.mPermissions = permissions;
             return this;
         }
 
         public PermissionRequest showPermissionRationaleListener(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener) {
-            this.showRequestPermissionRationaleListener = showRequestPermissionRationaleListener;
+            this.mShowRequestPermissionRationaleListener = showRequestPermissionRationaleListener;
             return this;
         }
 
         public void execute(SimpleRuntimePermission.PermissionListener resultListener) {
-            this.resultListener = resultListener;
-            mOnExecuteListener.onExecute(this);
+
+            if (resultListener == null) {
+                throw new IllegalArgumentException("resultListener can't be null");
+            }
+
+            if (mPermissions == null
+                    || mPermissions.length == 0) {
+                throw new IllegalArgumentException("Permission can't be empty/null, please set permission");
+            }
+
+            mSimpleRuntimePermission.request(
+                    resultListener,
+                    this.mShowRequestPermissionRationaleListener,
+                    this.mPermissions
+            );
         }
-
-        String[] permissions() { return permissions; }
-
-        SimpleRuntimePermission.PermissionListener resultListener() { return resultListener; }
-
-        ShowRequestPermissionRationaleListener showPermissionRationaleListener() { return showRequestPermissionRationaleListener; }
     }
 
     public static PermissionRequest with(final SimpleRuntimePermission simpleRuntimePermission) {
@@ -54,16 +57,6 @@ public class SimpleRuntimePermissionHelper {
             throw new IllegalArgumentException("SimpleRuntimePermission argement can't be null");
         }
 
-        return new PermissionRequest(new PermissionRequest.OnExecuteListener() {
-            @Override
-            public void onExecute(PermissionRequest request) {
-
-                simpleRuntimePermission.request(
-                        request.resultListener(),
-                        request.showPermissionRationaleListener(),
-                        request.permissions()
-                );
-            }
-        });
+        return new PermissionRequest(simpleRuntimePermission);
     }
 }
