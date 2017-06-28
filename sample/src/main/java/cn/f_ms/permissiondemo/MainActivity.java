@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         SimpleRuntimePermissionHelper.with(simplePermission)
                 .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
                 .showPermissionRationaleListener(new MyShowRequestPermissionRationaleListener(mActivity))
-                .resultListener(new SimpleRuntimePermission.PermissionListener() {
+                .execute(new SimpleRuntimePermission.PermissionListener() {
                     @Override
                     public void onAllPermissionGranted() {
                         Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
@@ -137,8 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                 .show();
                     }
 
-                })
-                .execute();
+                });
     }
 
     private static class MyShowRequestPermissionRationaleListener implements ShowRequestPermissionRationaleListener {

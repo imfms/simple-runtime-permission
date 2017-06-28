@@ -1,7 +1,5 @@
 package cn.f_ms.runtimepermission.simple;
 
-import static android.R.id.empty;
-
 /**
  * SimpleRuntimePermissionHelper
  *
@@ -34,14 +32,14 @@ public class SimpleRuntimePermissionHelper {
             return this;
         }
 
-        public PermissionRequest resultListener(SimpleRuntimePermission.PermissionListener permissionListener) {
-            resultListener = permissionListener;
-            return this;
-        }
-
         public PermissionRequest showPermissionRationaleListener(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener) {
             this.showRequestPermissionRationaleListener = showRequestPermissionRationaleListener;
             return this;
+        }
+
+        public void execute(SimpleRuntimePermission.PermissionListener resultListener) {
+            this.resultListener = resultListener;
+            mOnExecuteListener.onExecute(this);
         }
 
         String[] permissions() { return permissions; }
@@ -49,15 +47,11 @@ public class SimpleRuntimePermissionHelper {
         SimpleRuntimePermission.PermissionListener resultListener() { return resultListener; }
 
         ShowRequestPermissionRationaleListener showPermissionRationaleListener() { return showRequestPermissionRationaleListener; }
-
-        public void execute() {
-            mOnExecuteListener.onExecute(this);
-        }
     }
 
     public static PermissionRequest with(final SimpleRuntimePermission simpleRuntimePermission) {
         if (simpleRuntimePermission == null) {
-            throw new IllegalArgumentException("SimpleRuntimePermission argement can't be empty");
+            throw new IllegalArgumentException("SimpleRuntimePermission argement can't be null");
         }
 
         return new PermissionRequest(new PermissionRequest.OnExecuteListener() {

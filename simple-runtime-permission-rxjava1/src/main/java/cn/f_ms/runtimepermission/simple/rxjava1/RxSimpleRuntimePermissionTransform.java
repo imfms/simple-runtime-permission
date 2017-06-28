@@ -1,6 +1,5 @@
 package cn.f_ms.runtimepermission.simple.rxjava1;
 
-import cn.f_ms.runtimepermission.simple.Permission;
 import cn.f_ms.runtimepermission.simple.PermissionRefuseResultHelper;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
@@ -36,7 +35,7 @@ public class RxSimpleRuntimePermissionTransform<T> implements Observable.Transfo
                         SimpleRuntimePermissionHelper.with(simpleRuntimePermission)
                                 .permission(permissions)
                                 .showPermissionRationaleListener(showRequestPermissionRationaleListener)
-                                .resultListener(new SimpleRuntimePermission.PermissionListener() {
+                                .execute(new SimpleRuntimePermission.PermissionListener() {
                                     @Override
                                     public void onAllPermissionGranted() {
                                         subscriber.onNext(t);
@@ -49,8 +48,7 @@ public class RxSimpleRuntimePermissionTransform<T> implements Observable.Transfo
                                                 new PermissionException(resultHelper)
                                         );
                                     }
-                                })
-                                .execute();
+                                });
                     }
                 });
             }
