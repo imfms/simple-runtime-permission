@@ -1,8 +1,10 @@
 package cn.f_ms.runtimepermission.simple.rxjava1;
 
+import android.app.Activity;
+
+import cn.f_ms.runtimepermission.simple.PermissionListener;
 import cn.f_ms.runtimepermission.simple.PermissionRefuseResultHelper;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
-import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermissionHelper;
 import rx.Observable;
 import rx.Subscriber;
@@ -10,16 +12,13 @@ import rx.functions.Func1;
 
 public class RxSimpleRuntimePermissionTransform<T> implements Observable.Transformer<T, T> {
 
-    private final SimpleRuntimePermission simpleRuntimePermission;
+    private final Activity mActivity;
     private final ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener;
     private final String[] permissions;
 
-    public RxSimpleRuntimePermissionTransform(SimpleRuntimePermission simpleRuntimePermission, String... permissions) {
-        this(simpleRuntimePermission, null, permissions);
-    }
-
-    public RxSimpleRuntimePermissionTransform(SimpleRuntimePermission simpleRuntimePermission, ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions) {
-        this.simpleRuntimePermission = simpleRuntimePermission;
+    public RxSimpleRuntimePermissionTransform(Activity activity, String... permissions) { this(activity, null, permissions); }
+    public RxSimpleRuntimePermissionTransform(Activity activity, ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions) {
+        this.mActivity = activity;
         this.showRequestPermissionRationaleListener = showRequestPermissionRationaleListener;
         this.permissions = permissions;
     }
@@ -32,10 +31,10 @@ public class RxSimpleRuntimePermissionTransform<T> implements Observable.Transfo
                 return Observable.create(new Observable.OnSubscribe<T>() {
                     @Override
                     public void call(final Subscriber<? super T> subscriber) {
-                        SimpleRuntimePermissionHelper.with(simpleRuntimePermission)
+                        SimpleRuntimePermissionHelper.with(mActivity)
                                 .permission(permissions)
                                 .showPermissionRationaleListener(showRequestPermissionRationaleListener)
-                                .execute(new SimpleRuntimePermission.PermissionListener() {
+                                .execute(new PermissionListener() {
                                     @Override
                                     public void onAllPermissionGranted() {
                                         subscriber.onNext(t);

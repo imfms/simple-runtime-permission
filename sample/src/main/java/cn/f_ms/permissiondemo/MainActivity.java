@@ -9,9 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import cn.f_ms.runtimepermission.simple.PermissionListener;
 import cn.f_ms.runtimepermission.simple.PermissionRefuseResultHelper;
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
-import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 import cn.f_ms.runtimepermission.simple.SimpleRuntimePermissionHelper;
 import cn.f_ms.runtimepermission.simple.rxjava1.None;
 import cn.f_ms.runtimepermission.simple.rxjava2.PermissionException;
@@ -112,12 +112,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestPermissionWithBase(final String requestSuccessStr) {
 
-        SimpleRuntimePermission simplePermission = new SimpleRuntimePermission(mActivity);
-
-        SimpleRuntimePermissionHelper.with(simplePermission)
+        SimpleRuntimePermissionHelper.with(mActivity)
                 .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
                 .showPermissionRationaleListener(new MyShowRequestPermissionRationaleListener(mActivity))
-                .execute(new SimpleRuntimePermission.PermissionListener() {
+                .execute(new PermissionListener() {
                     @Override
                     public void onAllPermissionGranted() {
                         Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
