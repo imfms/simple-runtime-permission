@@ -1,5 +1,7 @@
 package cn.f_ms.runtimepermission.simple;
 
+import android.app.Activity;
+
 /**
  * SimpleRuntimePermissionHelper
  *
@@ -33,7 +35,7 @@ public class SimpleRuntimePermissionHelper {
             return this;
         }
 
-        public void execute(SimpleRuntimePermission.PermissionListener resultListener) {
+        public void execute(PermissionListener resultListener) {
 
             if (resultListener == null) {
                 throw new IllegalArgumentException("resultListener can't be null");
@@ -52,11 +54,11 @@ public class SimpleRuntimePermissionHelper {
         }
     }
 
-    public static PermissionRequest with(final SimpleRuntimePermission simpleRuntimePermission) {
-        if (simpleRuntimePermission == null) {
-            throw new IllegalArgumentException("SimpleRuntimePermission argement can't be null");
+    public static PermissionRequest with(Activity activity) {
+        if (activity == null) {
+            throw new IllegalArgumentException("activity can't be null");
         }
 
-        return new PermissionRequest(simpleRuntimePermission);
+        return new PermissionRequest(new SimpleRuntimePermission(activity));
     }
 }

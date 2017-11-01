@@ -3,7 +3,6 @@ package cn.f_ms.runtimepermission.simple.rxjava1;
 import android.app.Activity;
 
 import cn.f_ms.runtimepermission.simple.ShowRequestPermissionRationaleListener;
-import cn.f_ms.runtimepermission.simple.SimpleRuntimePermission;
 import rx.Observable;
 
 /**
@@ -14,10 +13,13 @@ import rx.Observable;
 
 public class RxSimpleRuntimePermission {
 
-    private SimpleRuntimePermission mSimpleRuntimePermission;
+    private final Activity mSimpleRuntimePermission;
 
     public RxSimpleRuntimePermission(Activity activity) {
-        mSimpleRuntimePermission = new SimpleRuntimePermission(activity);
+        if (activity == null) {
+            throw new IllegalArgumentException("activity can't be null");
+        }
+        mSimpleRuntimePermission = activity;
     }
 
     public <T> RxSimpleRuntimePermissionTransform<T> compose(String... permissions) { return compose(null, permissions); }
