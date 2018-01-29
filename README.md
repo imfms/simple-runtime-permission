@@ -23,145 +23,130 @@ Android API_LEVEL >= 11
 - Gradle LatestVersion is [![](https://jitpack.io/v/imfms/simple-runtime-permission.svg)](https://jitpack.io/#imfms/simple-runtime-permission)
 
 
-        repositories {
-            maven { url 'https://jitpack.io' } // If not already there
-        }
-        
-        dependencies {
-    
-            /*
-            BaseLibrary
-            */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission:${latest.version}'
-            
-            /*
-            Support For RxJava1
-            */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava1:${latest.version}'
-            
-            /*
-            Support For RxJava2
-            */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:${latest.version}'
-        }
+```groovy
+repositories {
+  maven { url 'https://jitpack.io' } // If not already there
+}
 
-## How to use
+dependencies {
 
+  /*
+  BaseLibrary
+  */
+  compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission:${latest.version}'
 
-0. Declaration Permission in Manifest
+  /*
+  Support For RxJava1
+  */
+  compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava1:${latest.version}'
 
-> Permission Result Wrapper
-
-```java
-class Permission {
-    String name; // Permission String
-    boolean isGranted; // isGranted
-    boolean isShouldShowRequestPermissionRationale; // isShouldShowRequestPermissionRationale (valid when isGranted is false)
+  /*
+  Support For RxJava2
+  */
+  compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:${latest.version}'
 }
 ```
 
+## How to use
+
 ### Base Library
-callback mode response request
+normal callback mode
 
-1. Instance Class SimpleRuntimePermission
+#### 使用示例
 
-        SimpleRuntimePermission(Activity activity)
+```java
+// Request 'read contacts' & 'call phone' permission, When user has refused this permission(not select never tip)  tell user why need this permission
+SimpleRuntimePermissionHelper.with(mActivity)
+  .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
+  .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
+      @Override
+      public void onShowRequestPermissionRationale(final ShowRequestPermissionRationaleControler controler, String[] permissions) {
+          new AlertDialog.Builder(mActivity)
+                  .setTitle("Tips")
+                  .setMessage("Please Give Me Those Permissions")
+                  .setPositiveButton("Yes, I Will", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          controler.doContinue();
+                      }
+                  })
+                  .setNegativeButton("Sorry, I can't", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          controler.doCancel();
+                      }
+                  })
+                  .setCancelable(false)
+                  .create()
+                  .show();
+      }
 
-2. Invoke SimpleRuntimePermission.request to request permission
+      @Override
+      public void onRequestPermissionRationaleRefuse(String[] permissions) {
+          Toast.makeText(mActivity, "Well, You refused.", Toast.LENGTH_SHORT).show();
+      }
+  })
+  .execute(new PermissionListener() {
+      @Override
+      public void onAllPermissionGranted() {
+          Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
+      }
 
-        void request(
-            PermissionListener listener,
-            ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener,
-            String... permissions
-        )
+      @Override
+      public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
+          String str = String.format("all: %s\ngranted: %s\nrefuse:%s\nnever_ask: %s",
+                  resultHelper.getAllPermissions(),
+                  resultHelper.getGrantPermissions(),
+                  resultHelper.getRefusePermissions(),
+                  resultHelper.getNeverAskAgainPermissions()
+          );
 
-    - String... Permission string array, accept mulit args, recommend select from Manifest.permission.*
-    - PermissionListener Permission request callback listener
+          new AlertDialog.Builder(MainActivity.this)
+                  .setMessage(str)
+                  .show();
+      }
+  });
+```
 
-            // When all of request permissions were granted
-            void onAllPermissionGranted()
+#### 参数解释
 
-            // When any permissions were refused
-            void onPermissionRefuse(PermissionRefuseResultHelper resultHelper)
+```java
+// create new instance, linked mode invoke
+SimpleRuntimePermissionHelper.with(mActivity)
+  // Permission string array, accept mulit args, recommend use from Manifest.permission.*
+  .permission(PermissionStr...)
+  // [Optional] ShowRequestPermissionRationaleListener ShowRequestPermissionRationale callback listener, can refer official document Requesting Permissions at https://developer.android.com/training/permissions/requesting.html#explain
+  .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
+      @Override
+      public void onShowRequestPermissionRationale(ShowRequestPermissionRationaleControler controler, String[] permissions) {
+        /* 
+        when need show RequestPermissionRationale tips, developer can custom show ui. need call controler's method doContinue() or doCancel when user select agree or refuse from your custom ui
+        controler.doContinue(); // user agree
+        controler.doCancel(); // user refuse
+        */
+      }
 
-    - [Optional] ShowRequestPermissionRationaleListener ShowRequestPermissionRationale callback listener, can refer official document [Requesting Permissions at Run Time#Explain why the app needs permissions](https://developer.android.com/training/permissions/requesting.html#explain)
+      @Override
+      public void onRequestPermissionRationaleRefuse(String[] permissions) {
+          /*
+          When request permission rationale refuse
+          when ShowRequestPermissionRationaleControler.doCancel() invoke
+          */
+      }
+  })
+  // request it
+  .execute(new PermissionListener() {
+      @Override
+      public void onAllPermissionGranted() {
+           // When all of request permissions were granted
+      }
 
-         // When need show request permission rationale tip
-         void onShowRequestPermissionRationale(
-             ShowRequestPermissionRationaleControler controler,
-             String[] permissions
-         )
-         ​        
-         /*
-         When request permission rationale refuse
-         when ShowRequestPermissionRationaleControler.doCancel() invoke
-         */
-         void onRequestPermissionRationaleRefuse(
-             String[] permissions
-         )
-         ​    
-
-    - String[] Need show request permission rationale permission string array
-    - ShowRequestPermissionRationaleControler Controler
-        - void doContinue() // Do request permission from system (user select agree)
-        - void doCancel() // Cancel request action (user select refuse)
-
-4. Sample
-
-    > Request 'read contacts' & 'call phone' permission, When user has refused this permission(not select never tip)  tell user why need this permission
-
-    ```java
-    SimpleRuntimePermissionHelper.with(mActivity)
-        .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
-        .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
-            @Override
-            public void onShowRequestPermissionRationale(final ShowRequestPermissionRationaleControler controler, String[] permissions) {
-                new AlertDialog.Builder(mActivity)
-                        .setTitle("Tips")
-                        .setMessage("Please Give Me Those Permissions")
-                        .setPositiveButton("Yes, I Will", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                controler.doContinue();
-                            }
-                        })
-                        .setNegativeButton("Sorry, I can't", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                controler.doCancel();
-                            }
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-            }
-
-            @Override
-            public void onRequestPermissionRationaleRefuse(String[] permissions) {
-                Toast.makeText(mActivity, "Well, You refused.", Toast.LENGTH_SHORT).show();
-            }
-        })
-        .execute(new PermissionListener() {
-            @Override
-            public void onAllPermissionGranted() {
-                Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
-                String str = String.format("all: %s\ngranted: %s\nrefuse:%s\nnever_ask: %s",
-                        resultHelper.getAllPermissions(),
-                        resultHelper.getGrantPermissions(),
-                        resultHelper.getRefusePermissions(),
-                        resultHelper.getNeverAskAgainPermissions()
-                );
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage(str)
-                        .show();
-            }
-        });
-    ```
+      @Override
+      public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
+          // When any permissions were refused
+      }
+  });
+```
 
 ### For RxJava1
 
