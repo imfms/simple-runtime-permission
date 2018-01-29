@@ -52,7 +52,7 @@ dependencies {
 ### Base Library
 normal callback mode
 
-#### 使用示例
+#### Example
 
 ```java
 // Request 'read contacts' & 'call phone' permission, When user has refused this permission(not select never tip)  tell user why need this permission
@@ -108,7 +108,7 @@ SimpleRuntimePermissionHelper.with(mActivity)
   });
 ```
 
-#### 参数解释
+#### Argument Explain
 
 ```java
 // create new instance, linked mode invoke
