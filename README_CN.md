@@ -20,173 +20,162 @@ Android API_LEVEL >= 11
 - Gradle 当前最新版本为 [![](https://jitpack.io/v/imfms/simple-runtime-permission.svg)](https://jitpack.io/#imfms/simple-runtime-permission)
 
 
-        repositories {
-            maven { url 'https://jitpack.io' } // If not already there
-        }
-        
-        dependencies {
-    
-            /*
-            BaseLibrary
-            */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission:${最新版本}'
-            
-            /*
-            Support For RxJava1
-            */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava1:${最新版本}'
-            
-            /*
-            Support For RxJava2
-            */
-            compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:${最新版本}'
-        }
+```groovy
+repositories {
+  maven { url 'https://jitpack.io' } // If not already there
+}
 
-## 使用方法
+dependencies {
 
+  /*
+  BaseLibrary
+  */
+  compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission:${最新版本}'
 
-0. 在清单文件中声明所需权限
+  /*
+  Support For RxJava1
+  */
+  compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava1:${最新版本}'
 
-> 权限结果包装
-
-```java
-class Permission {
-    String name; // 权限字符串
-    boolean isGranted; // 是否已同意
-    boolean isShouldShowRequestPermissionRationale; // 是否需要提示解释为什么需要权限(当isGranted为false时生效，否则忽略)
+  /*
+  Support For RxJava2
+  */
+  compile 'com.github.imfms.simple-runtime-permission:simple-runtime-permission-rxjava2:${最新版本}'
 }
 ```
 
-### base_library
+## 使用方法
+
+### Base Library
 通过回调方式对请求权限进行响应
 
-1. 实例化类 SimpleRuntimePermission
+#### 使用示例
 
-        SimpleRuntimePermission(Activity activity)
+```java
+// 请求读取通讯录联系人、拨打电话权限，当用户曾经拒绝过权限获取(未勾选不再提示)时提示用户为什么我们需要这个权限
+SimpleRuntimePermissionHelper.with(mActivity)
+  .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
+  .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
+      @Override
+      public void onShowRequestPermissionRationale(final ShowRequestPermissionRationaleControler controler, String[] permissions) {
+          new AlertDialog.Builder(mActivity)
+                  .setTitle("Tips")
+                  .setMessage("Please Give Me Those Permissions")
+                  .setPositiveButton("Yes, I Will", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          controler.doContinue();
+                      }
+                  })
+                  .setNegativeButton("Sorry, I can't", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          controler.doCancel();
+                      }
+                  })
+                  .setCancelable(false)
+                  .create()
+                  .show();
+      }
 
-2. 通过类SimpleRuntimePermission.request方法请求权限
+      @Override
+      public void onRequestPermissionRationaleRefuse(String[] permissions) {
+          Toast.makeText(mActivity, "Well, You refused.", Toast.LENGTH_SHORT).show();
+      }
+  })
+  .execute(new PermissionListener() {
+      @Override
+      public void onAllPermissionGranted() {
+          Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
+      }
 
-        void request(
-            PermissionListener listener,
-            ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener,
-            String... permissions
-        )
+      @Override
+      public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
+          String str = String.format("all: %s\ngranted: %s\nrefuse:%s\nnever_ask: %s",
+                  resultHelper.getAllPermissions(),
+                  resultHelper.getGrantPermissions(),
+                  resultHelper.getRefusePermissions(),
+                  resultHelper.getNeverAskAgainPermissions()
+          );
 
-    - String... 权限字符串可变数组，接受可变String参数或String数组，可从 Manifest.permission.* 引用获取权限字符串
-    - PermissionListener 权限请求回调监听器
+          new AlertDialog.Builder(MainActivity.this)
+                  .setMessage(str)
+                  .show();
+      }
+  });
+```
+#### 参数解释
 
-            // 当所有指定请求权限被用户同意
-            void onAllPermissionGranted()
+```java
+// 创建实例, 链式调用 
+SimpleRuntimePermissionHelper.with(mActivity)
+  // 权限字符串可变数组，接受可变String参数或String数组，可从 Manifest.permission.* 引用获取权限字符串
+  .permission(PermissionStr...)
+  // [可选] 显示请求权限理由提示回调监听器，可参考官方文档: https://developer.android.com/training/permissions/requesting.html#explain
+  .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
+      @Override
+      public void onShowRequestPermissionRationale(ShowRequestPermissionRationaleControler controler, String[] permissions) {
+        /* 当需要展示请求权限解释提示时被回调时，可在此自定义提示ui，在用户选择同意或拒绝操作后调用控制器的相关方法
+        controler.doContinue(); // 用户同意
+        controler.doCancel(); // 用户拒绝
+        */
+      }
 
-            // 当有任何一个权限被拒绝
-            void onPermissionRefuse(PermissionRefuseResultHelper resultHelper)
+      @Override
+      public void onRequestPermissionRationaleRefuse(String[] permissions) {
+          /*
+          当请求权限解释提示被用户拒绝
+          ShowRequestPermissionRationaleControler.doCancel() 被调用时
+          */
+      }
+  })
+  // 开始请求
+  .execute(new PermissionListener() {
+      @Override
+      public void onAllPermissionGranted() {
+          // 当所有指定请求权限被用户同意
+      }
 
-    - [可选]ShowRequestPermissionRationaleListener 显示请求权限理由提示回调监听器，参考官方文档 [运行时请求权限#解释应用为什么需要权限](https://developer.android.com/training/permissions/requesting.html#explain)
-
-         // 当需要展示请求权限解释提示
-         void onShowRequestPermissionRationale(
-             ShowRequestPermissionRationaleControler controler,
-             String[] permissions
-         )
-         ​        
-         /*
-         当请求权限解释提示被用户拒绝
-         ShowRequestPermissionRationaleControler.doCancel()被调用时
-         */
-         void onRequestPermissionRationaleRefuse(
-             String[] permissions
-         )
-         ​    
-
-    - String[] 需要请求权限解释的权限字符串集
-    - ShowRequestPermissionRationaleControler 控制器
-        - void doContinue() // 向系统请求权限(用户选择同意)
-        - void doCancel() // 取消权限请求动作(用户选择拒绝)
-
-4. 使用示例
-
-    > 请求读取通讯录联系人、拨打电话权限，当用户曾经拒绝过权限获取(未勾选不再提示)时提示用户为什么我们需要这个权限
-
-    ```java
-    SimpleRuntimePermissionHelper.with(mActivity)
-        .permission(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE)
-        .showPermissionRationaleListener(new ShowRequestPermissionRationaleListener() {
-            @Override
-            public void onShowRequestPermissionRationale(final ShowRequestPermissionRationaleControler controler, String[] permissions) {
-                new AlertDialog.Builder(mActivity)
-                        .setTitle("Tips")
-                        .setMessage("Please Give Me Those Permissions")
-                        .setPositiveButton("Yes, I Will", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                controler.doContinue();
-                            }
-                        })
-                        .setNegativeButton("Sorry, I can't", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                controler.doCancel();
-                            }
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-            }
-
-            @Override
-            public void onRequestPermissionRationaleRefuse(String[] permissions) {
-                Toast.makeText(mActivity, "Well, You refused.", Toast.LENGTH_SHORT).show();
-            }
-        })
-        .execute(new PermissionListener() {
-            @Override
-            public void onAllPermissionGranted() {
-                Toast.makeText(mActivity, requestSuccessStr, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
-                String str = String.format("all: %s\ngranted: %s\nrefuse:%s\nnever_ask: %s",
-                        resultHelper.getAllPermissions(),
-                        resultHelper.getGrantPermissions(),
-                        resultHelper.getRefusePermissions(),
-                        resultHelper.getNeverAskAgainPermissions()
-                );
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage(str)
-                        .show();
-            }
-        });
-    ```
+      @Override
+      public void onPermissionRefuse(PermissionRefuseResultHelper resultHelper) {
+          // 当有任何一个权限被拒绝
+      }
+  });
+```
 
 ### For RxJava1
 
 1. 实例化 RxSimpleRuntimePermission
 
-        RxSimpleRuntimePermission(Activity activity)
+   ```java
+   RxSimpleRuntimePermission(Activity activity)
+   ```
 
 2. 调用请求权限方法
     - compose 使用Rxjava compose操作符对请求权限行为进行合并，当遇到错误则封装到PermissionException并抛出到订阅者onError
 
-            <T> RxSimpleRuntimePermissionTransform<T> compose(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
+        ```java
+        <T> RxSimpleRuntimePermissionTransform<T> compose(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
+        ```
 
     - request 生成被观察者，开发者直接订阅结果，当遇到错误则封装到PermissionException并抛出到订阅者onError
 
-            Observable<None> request(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
+        ```java
+        Observable<None> request(ShowRequestPermissionRationaleListener showRequestPermissionRationaleListener, String... permissions)
+        ```
 
     - Permisssion Exception
-    ```java
-    public class PermissionException extends RuntimeException {
-        public final PermissionRefuseResultHelper result;
-    }
-    ```
+
+        ```java
+        public class PermissionException extends RuntimeException {
+        	public final PermissionRefuseResultHelper result;
+        }
+        ```
 
 3. 使用示例
 
-    > 请求读取通讯录联系人、拨打电话权限，当用户曾经拒绝过权限获取(未勾选不再提示)时提示用户为什么我们需要这个权限
-
     ```java
+    // 请求读取通讯录联系人、拨打电话权限，当用户曾经拒绝过权限获取(未勾选不再提示)时提示用户为什么我们需要这个权限
     RxSimpleRuntimePermission rxSimpleRuntimePermission = new RxSimpleRuntimePermission(mActivity);
 
     Observable.just(requestSuccessStr)
